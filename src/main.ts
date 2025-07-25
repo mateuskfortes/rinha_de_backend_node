@@ -1,5 +1,5 @@
 const server = Bun.serve({
-  port: 9999,
+  port: 8080,
   fetch(req) {
     if (req.method === "GET" && new URL(req.url).pathname === "/") {
       return new Response("Olá, mundo!", { status: 200 });

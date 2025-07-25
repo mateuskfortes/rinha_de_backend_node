@@ -1,15 +1,15 @@
 FROM oven/bun:debian
 
-WORKDIR /usr/src/app
+WORKDIR /usr/local/app
 
 COPY package.json ./
 COPY bun.lock ./
-COPY src ./
+COPY src ./src/
 
 RUN bun install
 
 # Expose the port that the application listens on.
-EXPOSE 9999
+EXPOSE 8080
 
 # Run the application.
-CMD bun run main.ts
+CMD bun run --watch src/main.ts
