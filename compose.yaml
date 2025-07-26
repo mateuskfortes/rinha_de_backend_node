@@ -7,10 +7,11 @@ services:
     environment:
       - PROCESSOR_DEFAULT_URL=http://payment-processor-default:8080
       - PROCESSOR_FALLBACK_URL=http://payment-processor-fallback:8080
-    volumes:
-      - type: bind
-        source: ./src
-        target: /usr/loca/app/src/
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=payment
+      - DB_USER=user
+      - DB_PASSWORD=123456 
     develop:
       watch:
         - path: ./src
@@ -34,17 +35,17 @@ services:
     image: postgres
     restart: always
     user: postgres
-    secrets:
-      - db-password
     volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=example
-      - POSTGRES_PASSWORD_FILE=/run/secrets/db-password
+      POSTGRES_DB: payment 
+      POSTGRES_USER: user    
+      POSTGRES_PASSWORD: 123456 
     expose:
       - 5432
     healthcheck:
-      test: [ "CMD", "pg_isready" ]
+      test: ["CMD", "pg_isready", "-U", "user", "-d", "payment"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -65,9 +66,6 @@ services:
 
 volumes:
   db-data:
-secrets:
-  db-password:
-    file: db/password.txt
 
 networks:
   payment-processor:
