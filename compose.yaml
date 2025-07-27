@@ -12,13 +12,9 @@ services:
       - DB_NAME=payment
       - DB_USER=user
       - DB_PASSWORD=123456 
-    develop:
-      watch:
-        - path: ./src
-          action: sync
-          target: /usr/local/app/src/
-        - path: ./src/package.json
-          action: rebuild
+    volumes:
+      - ./src:/usr/local/app/src
+    command: bun run --watch /usr/local/app/src/main.ts
     depends_on:
       db:
         condition: service_healthy

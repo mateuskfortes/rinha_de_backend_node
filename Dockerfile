@@ -12,4 +12,4 @@ RUN bun install
 EXPOSE 8080
 
 # Run the application.
-CMD bun run --watch src/main.ts
+CMD bun run src/main.ts
