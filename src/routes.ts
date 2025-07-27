@@ -1,4 +1,5 @@
 import pool from "./db";
+import { payment_processor_url } from "./workers";
 import type { PaymentsBody } from "./types";
 
 export async function getTransactions() {
@@ -12,7 +13,7 @@ export async function postPayments(req: Request) {
   const amount = body?.amount
   const requestedAt = new Date().toISOString()
 
-  await fetch(`${process.env.PROCESSOR_DEFAULT_URL}/payments`, {
+  await fetch(`${payment_processor_url}/payments`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
