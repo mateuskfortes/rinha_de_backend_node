@@ -4,6 +4,6 @@ export type PaymentsBody = {
 }
 
 export type PaymentProcessorHealthBody = {
-  failing: string,
-  minResponseTime: string
+  failing: boolean,
+  minResponseTime: number
 }

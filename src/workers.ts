@@ -1,5 +1,6 @@
 import type { PaymentProcessorHealthBody } from "./types"
 
+export let payment_processor = 'default'
 export let payment_processor_url = process.env.PROCESSOR_DEFAULT_URL
 
 export async function runHealthChecker() {
@@ -15,9 +16,11 @@ export async function runHealthChecker() {
 }
 
 function setPaymentProcessorUrl(dataDf: PaymentProcessorHealthBody, dataFb: PaymentProcessorHealthBody) {
-  if (dataDf.failing === 'true' && dataFb.failing === 'false') {
+  if (dataDf.failing && !dataFb.failing) {
     payment_processor_url = process.env.PROCESSOR_FALLBACK_URL
+    payment_processor = 'fallback'
     return
   }
-  payment_processor_url = process.env.PROCESSOR_FALLBACK_URL
+  payment_processor_url = process.env.PROCESSOR_DEFAULT_URL
+  payment_processor = 'default'
 }

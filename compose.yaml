@@ -40,6 +40,8 @@ services:
       POSTGRES_PASSWORD: 123456 
     expose:
       - 5432
+    ports:
+      - 5432:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "user", "-d", "payment"]
       interval: 10s
