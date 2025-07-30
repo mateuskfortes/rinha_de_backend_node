@@ -1,6 +1,6 @@
 import pool from "./db";
-import { payment_processor, payment_processor_url } from "./workers";
 import type { PaymentsBody } from "./types";
+import { redis } from "bun";
 
 export async function getTransactions() {
   const response = await pool.query(`SELECT * FROM transactions`)
@@ -13,22 +13,7 @@ export async function postPayments(req: Request) {
   const amount = body?.amount
   const requestedAt = new Date().toISOString()
 
-  const response = await fetch(`${payment_processor_url}/payments`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      correlationId, amount, requestedAt
-    })
-  })
-
-  if (response.ok) {
-    await pool.query(
-      `INSERT INTO transactions (correlationId, amount, requestedAt, type) VALUES ($1, $2, $3, $4)`,
-      [correlationId, amount, requestedAt, payment_processor]
-    );
-  }
+  await redis.lpush('payment', JSON.stringify({ correlationId, amount, requestedAt }))
 
   return new Response('', { status: 204 });
 }
@@ -89,4 +74,4 @@ export async function getPaymentsSummary(req: Request) {
     status: 200,
     headers: { "Content-Type": "application/json" }
   });
-}
+} 

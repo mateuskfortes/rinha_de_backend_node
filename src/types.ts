@@ -3,6 +3,10 @@ export type PaymentsBody = {
   amount: string
 }
 
+export type FullPayment = PaymentsBody & {
+  requestedAt: string
+}
+
 export type PaymentProcessorHealthBody = {
   failing: boolean,
   minResponseTime: number

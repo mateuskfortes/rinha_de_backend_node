@@ -1,9 +1,11 @@
 import pool from "./db";
 import { getPaymentsSummary, getTransactions, postPayments } from "./routes";
-import { runHealthChecker } from "./workers";
+import { runHealthChecker } from "./utils";
 
-runHealthChecker()
-console.log('oiAa ')
+const payment_processor_worker = new Worker(new URL("./worker.ts", import.meta.url))
+const payment_processor_worker_list = [payment_processor_worker]
+runHealthChecker(payment_processor_worker_list)
+
 const server = Bun.serve({
   port: 8080,
   async fetch(req) {
