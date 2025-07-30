@@ -1,9 +1,13 @@
+import { isPropertyAccessExpression } from "typescript";
 import pool from "./db";
 import { getPaymentsSummary, getTransactions, postPayments } from "./routes";
 import { runHealthChecker } from "./utils";
 
-const payment_processor_worker = new Worker(new URL("./worker.ts", import.meta.url))
-const payment_processor_worker_list = [payment_processor_worker]
+const payment_processor_worker_list: Worker[] = []
+for (let i = 0; i < Number(process.env.WORKERS || ''); i++) {
+  const payment_processor_worker = new Worker(new URL("./worker.ts", import.meta.url))
+  payment_processor_worker_list.push(payment_processor_worker)
+}
 runHealthChecker(payment_processor_worker_list)
 
 const server = Bun.serve({

@@ -13,6 +13,7 @@ services:
       - DB_USER=user
       - DB_PASSWORD=123456
       - REDIS_URL=redis://redis:6379
+      - WORKERS=2
     volumes:
       - ./src:/usr/local/app/src
     command: bun run --watch /usr/local/app/src/main.ts
