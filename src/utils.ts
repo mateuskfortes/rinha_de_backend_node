@@ -16,7 +16,7 @@ export async function runHealthChecker(workers: Worker[]) {
       setPaymentProcessorUrl(dataDf, dataFb)
       workers.forEach((w) => w.postMessage({ payment_processor, payment_processor_url }))
 
-      await new Promise((r) => setTimeout(r, 5000))
+      await Bun.sleep(5000)
     } catch (e) {
       console.error(e)
     }

@@ -2,6 +2,7 @@ import { isPropertyAccessExpression } from "typescript";
 import pool from "./db";
 import { getPaymentsSummary, getTransactions, postPayments } from "./routes";
 import { runHealthChecker } from "./utils";
+import { redis } from "bun";
 
 const payment_processor_worker_list: Worker[] = []
 for (let i = 0; i < Number(process.env.WORKERS || ''); i++) {
@@ -17,7 +18,8 @@ const server = Bun.serve({
       return new Response(`oi`, { status: 200 });
     }
     if (req.method === "GET" && new URL(req.url).pathname === "/clear") {
-      pool.query('delete from transactions')
+      await redis.send('FLUSHALL', [])
+      await pool.query('delete from transactions')
       return new Response();
     }
 
